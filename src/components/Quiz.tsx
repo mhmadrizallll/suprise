@@ -1,31 +1,14 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Cake, Flame, Sparkles } from "lucide-react";
 
-export default function Quiz({ onNext }: { onNext: () => void }) {
-  const [selected, setSelected] = useState<number | null>(null);
-  const [correct, setCorrect] = useState(false);
+export default function BirthdayWish({ onNext }: { onNext: () => void }) {
+  const [blown, setBlown] = useState(false);
 
-  const answers = [
-    {
-      text: "Lagi kerja keras 😎",
-      correct: false,
-    },
-    {
-      text: "Lagi mikirin masa depan 💭",
-      correct: false,
-    },
-    {
-      text: "Lagi mikirin kamu 😳",
-      correct: true,
-    },
-  ];
+  const handleBlow = () => {
+    if (blown) return;
 
-  const handlePick = (index: number) => {
-    setSelected(index);
-
-    if (answers[index].correct) {
-      setCorrect(true);
-    }
+    setBlown(true);
   };
 
   return (
@@ -36,117 +19,190 @@ export default function Quiz({ onNext }: { onNext: () => void }) {
         justifyContent: "center",
         alignItems: "center",
         padding: 20,
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <div style={{ textAlign: "center", maxWidth: 600 }}>
-        {/* TITLE */}
-        <motion.h2
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          style={{
-            color: "white",
-            marginBottom: 10,
+      {/* Background Glow */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(circle at center, rgba(255,255,255,.08), transparent 60%)",
+        }}
+      />
+
+      <div
+        style={{
+          textAlign: "center",
+          position: "relative",
+          zIndex: 2,
+          maxWidth: 600,
+        }}
+      >
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
           }}
         >
-          🎮 Mind Quiz
-        </motion.h2>
+          <h2
+            style={{
+              color: "white",
+              fontSize: 42,
+              marginBottom: 20,
+            }}
+          >
+            Make A Wish ✨
+          </h2>
 
-        <p style={{ color: "rgba(255,255,255,.6)", marginBottom: 40 }}>
-          Menurut kamu, aku lagi ngapain kalau lagi mikirin kamu?
-        </p>
+          <p
+            style={{
+              color: "rgba(255,255,255,.7)",
+              lineHeight: 1.8,
+              marginBottom: 60,
+            }}
+          >
+            Hari ini adalah hari spesialmu.
+            <br />
+            Sebelum lanjut...
+            <br />
+            buat satu harapan terlebih dahulu.
+          </p>
+        </motion.div>
 
-        {/* OPTIONS */}
-        <div
+        {/* Candle */}
+        <motion.div
+          whileHover={{
+            scale: blown ? 1 : 1.05,
+          }}
+          onClick={handleBlow}
           style={{
-            display: "grid",
-            gap: 16,
+            cursor: blown ? "default" : "pointer",
+            display: "inline-block",
+            position: "relative",
           }}
         >
-          {answers.map((item, i) => {
-            const isSelected = selected === i;
-
-            return (
+          {/* Flame */}
+          <AnimatePresence>
+            {!blown && (
               <motion.div
-                key={i}
-                onClick={() => handlePick(i)}
-                whileHover={{
-                  scale: 1.03,
-                  y: -3,
+                initial={{
+                  opacity: 0,
                 }}
-                whileTap={{
-                  scale: 0.97,
+                animate={{
+                  opacity: 1,
+                  y: [0, -4, 0],
                 }}
-                animate={
-                  isSelected && !item.correct
-                    ? {
-                        x: [-5, 5, -5, 5, 0],
-                      }
-                    : {}
-                }
-                transition={{ duration: 0.4 }}
+                exit={{
+                  opacity: 0,
+                  scale: 0,
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                }}
                 style={{
-                  padding: 18,
-                  borderRadius: 16,
-                  cursor: "pointer",
-                  background:
-                    selected === i
-                      ? item.correct
-                        ? "rgba(0,255,150,.15)"
-                        : "rgba(255,80,80,.15)"
-                      : "rgba(255,255,255,.06)",
-                  border:
-                    selected === i
-                      ? item.correct
-                        ? "1px solid rgba(0,255,150,.4)"
-                        : "1px solid rgba(255,80,80,.4)"
-                      : "1px solid rgba(255,255,255,.1)",
-                  backdropFilter: "blur(12px)",
-                  color: "white",
-                  transition: "all .3s ease",
+                  position: "absolute",
+                  top: -40,
+                  left: "50%",
+                  transform: "translateX(-50%)",
                 }}
               >
-                {item.text}
+                <Flame size={34} color="#FFD166" />
               </motion.div>
-            );
-          })}
-        </div>
+            )}
+          </AnimatePresence>
 
-        {/* RESULT */}
+          <Cake size={150} color="white" strokeWidth={1.5} />
+        </motion.div>
+
         <AnimatePresence>
-          {selected !== null && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              style={{ marginTop: 30 }}
+          {!blown && (
+            <motion.p
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              style={{
+                color: "rgba(255,255,255,.5)",
+                marginTop: 25,
+              }}
             >
-              {correct ? (
-                <>
-                  <p style={{ color: "#7CFFB2" }}>
-                    ✨ Benar... kamu terlalu jago nebak
-                  </p>
+              Klik lilinnya untuk meniup harapan ✨
+            </motion.p>
+          )}
+        </AnimatePresence>
 
-                  <motion.button
-                    onClick={onNext}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    style={{
-                      marginTop: 15,
-                      padding: "12px 24px",
-                      borderRadius: 999,
-                      border: "none",
-                      background: "white",
-                      color: "black",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Lanjut →
-                  </motion.button>
-                </>
-              ) : (
-                <p style={{ color: "rgba(255,255,255,.6)" }}>
-                  Hmmm… hampir 😆 coba lagi atau pilih yang lain
-                </p>
-              )}
+        <AnimatePresence>
+          {blown && (
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+            >
+              <motion.div
+                animate={{
+                  rotate: [0, 10, -10, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                }}
+              >
+                <Sparkles
+                  size={42}
+                  color="white"
+                  style={{
+                    marginTop: 30,
+                  }}
+                />
+              </motion.div>
+
+              <p
+                style={{
+                  color: "white",
+                  fontSize: 18,
+                  lineHeight: 2,
+                  marginTop: 20,
+                }}
+              >
+                Semoga harapan itu menemukan jalannya ✨
+              </p>
+
+              <motion.button
+                whileHover={{
+                  scale: 1.05,
+                }}
+                whileTap={{
+                  scale: 0.95,
+                }}
+                onClick={onNext}
+                style={{
+                  marginTop: 30,
+                  padding: "14px 28px",
+                  borderRadius: 999,
+                  border: "none",
+                  background: "white",
+                  color: "black",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                }}
+              >
+                Lanjutkan ✨
+              </motion.button>
             </motion.div>
           )}
         </AnimatePresence>
