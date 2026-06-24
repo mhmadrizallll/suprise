@@ -1,23 +1,28 @@
+"use client";
+
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Lock, Mail, Heart } from "lucide-react";
 
 type Props = {
   onNext: () => void;
 };
 
-const memories = [
+const messages = [
   {
-    title: "Awal Yang Tak Disangka",
-    text: "Kadang obrolan sederhana bisa membuat seseorang menjadi lebih menarik dari yang diduga.",
+    icon: "💬",
+    title: "Pesan Pertama",
+    text: "Kadang obrolan sederhana bisa membuat seseorang terasa lebih menarik dari yang diduga.",
   },
   {
-    title: "Momen Yang Tertinggal",
+    icon: "☕",
+    title: "Pesan Kedua",
     text: "Ada beberapa percakapan yang entah kenapa masih teringat sampai sekarang.",
   },
   {
-    title: "Hari Yang Spesial",
-    text: "Dan hari ini, aku membuat halaman kecil ini khusus untuk kamu.",
+    icon: "🎂",
+    title: "Pesan Terakhir",
+    text: "Dan karena hari ini spesial, aku membuat halaman kecil ini khusus untuk kamu.",
   },
 ];
 
@@ -25,7 +30,7 @@ export default function Timeline({ onNext }: Props) {
   const [opened, setOpened] = useState<number[]>([]);
   const [active, setActive] = useState<number | null>(null);
 
-  const openCrystal = (index: number) => {
+  const openCard = (index: number) => {
     if (!opened.includes(index)) {
       setOpened((prev) => [...prev, index]);
     }
@@ -33,151 +38,144 @@ export default function Timeline({ onNext }: Props) {
     setActive(index);
   };
 
-  const progress = `${opened.length}/3`;
+  const progress = opened.length;
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        position: "relative",
-        overflow: "hidden",
-        padding: "40px 20px",
-      }}
-    >
-      {/* Background Glow */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(circle at center, rgba(255,255,255,.08), transparent 60%)",
-          pointerEvents: "none",
-        }}
-      />
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-pink-950 via-purple-950 to-slate-950 px-6">
+      {/* Glow */}
+      <div className="absolute h-[700px] w-[700px] rounded-full bg-pink-500/10 blur-3xl" />
 
-      <div
-        style={{
-          position: "relative",
-          zIndex: 2,
-          maxWidth: 900,
-          margin: "0 auto",
-        }}
-      >
-        <motion.h2
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          style={{
-            textAlign: "center",
-            color: "white",
-            marginBottom: 10,
-            fontSize: 34,
-          }}
-        >
-          ✦ Kenangan Yang Tersimpan ✦
-        </motion.h2>
+      {/* Floating particles */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {[...Array(40)].map((_, i) => (
+          <motion.div
+            key={i}
+            animate={{
+              y: [-15, 15, -15],
+              opacity: [0.2, 1, 0.2],
+            }}
+            transition={{
+              duration: Math.random() * 5 + 3,
+              repeat: Infinity,
+            }}
+            className="absolute h-2 w-2 rounded-full bg-pink-300"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+          />
+        ))}
+      </div>
 
-        <p
-          style={{
-            textAlign: "center",
-            color: "rgba(255,255,255,.6)",
-            marginBottom: 60,
+      <div className="relative z-10 w-full max-w-5xl">
+        {/* Header */}
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: -20,
           }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          className="mb-14 text-center"
         >
-          {progress} ditemukan
-        </p>
+          <Mail size={60} className="mx-auto mb-5 text-pink-300" />
 
-        {/* Crystal Layout */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 30,
-            alignItems: "center",
-          }}
-        >
-          {memories.map((memory, index) => (
-            <motion.div
-              key={index}
-              onClick={() => openCrystal(index)}
-              whileHover={{
-                scale: 1.08,
-                y: -8,
-              }}
-              whileTap={{
-                scale: 0.95,
-              }}
-              animate={{
-                y: [0, -8, 0],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                delay: index * 0.5,
-              }}
-              style={{
-                cursor: "pointer",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <div
-                style={{
-                  width: 160,
-                  height: 160,
-                  borderRadius: 32,
-                  background:
-                    "linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.03))",
-                  border: "1px solid rgba(255,255,255,.12)",
-                  backdropFilter: "blur(20px)",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 10,
-                  boxShadow: "0 0 40px rgba(255,255,255,.08)",
+          <h1 className="text-4xl font-bold text-white md:text-5xl">
+            📩 Pesan Rahasia
+          </h1>
+
+          <p className="mt-4 text-white/70">
+            Ada beberapa hal kecil yang ingin aku sampaikan.
+          </p>
+
+          <p className="mt-2 text-pink-300">
+            {progress} / {messages.length} terbuka
+          </p>
+        </motion.div>
+
+        {/* Cards */}
+        <div className="grid gap-6 md:grid-cols-3">
+          {messages.map((item, index) => {
+            const isOpened = opened.includes(index);
+
+            return (
+              <motion.div
+                key={index}
+                whileHover={{
+                  y: -8,
+                  scale: 1.03,
                 }}
+                whileTap={{
+                  scale: 0.97,
+                }}
+                onClick={() => openCard(index)}
+                className="cursor-pointer"
               >
-                <Sparkles size={42} color="white" />
+                <div className="rounded-[28px] border border-white/10 bg-white/10 p-8 backdrop-blur-xl shadow-[0_0_30px_rgba(236,72,153,.1)]">
+                  <div className="mb-6 flex justify-center">
+                    {isOpened ? (
+                      <motion.div
+                        initial={{
+                          scale: 0,
+                        }}
+                        animate={{
+                          scale: 1,
+                        }}
+                        className="text-5xl"
+                      >
+                        {item.icon}
+                      </motion.div>
+                    ) : (
+                      <Lock size={50} className="text-white/60" />
+                    )}
+                  </div>
 
-                <span
-                  style={{
-                    color: "white",
-                    fontWeight: 500,
-                  }}
-                >
-                  Crystal #{index + 1}
-                </span>
-              </div>
-            </motion.div>
-          ))}
+                  <h3 className="text-center text-xl font-semibold text-white">
+                    {isOpened ? item.title : "Pesan Terkunci"}
+                  </h3>
+
+                  <p className="mt-3 text-center text-sm text-white/60">
+                    {isOpened
+                      ? "Klik lagi untuk membaca"
+                      : "Klik untuk membuka"}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
-        {opened.length === memories.length && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: 60,
-            }}
-          >
-            <button
-              onClick={onNext}
-              style={{
-                padding: "14px 30px",
-                borderRadius: 999,
-                border: "1px solid rgba(255,255,255,.2)",
-                background: "rgba(255,255,255,.08)",
-                color: "white",
-                cursor: "pointer",
-                backdropFilter: "blur(20px)",
+        {/* Continue */}
+        <AnimatePresence>
+          {opened.length === messages.length && (
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 20,
               }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              className="mt-14 flex justify-center"
             >
-              Lanjut ✨
-            </button>
-          </motion.div>
-        )}
+              <motion.button
+                whileHover={{
+                  scale: 1.05,
+                }}
+                whileTap={{
+                  scale: 0.95,
+                }}
+                onClick={onNext}
+                className="rounded-full bg-gradient-to-r from-pink-500 to-purple-500 px-8 py-4 font-semibold text-white shadow-[0_0_30px_rgba(236,72,153,.5)]"
+              >
+                Lanjut ❤️
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Modal */}
@@ -185,18 +183,16 @@ export default function Timeline({ onNext }: Props) {
         {active !== null && (
           <motion.div
             onClick={() => setActive(null)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            style={{
-              position: "fixed",
-              inset: 0,
-              background: "rgba(0,0,0,.75)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 99,
+            initial={{
+              opacity: 0,
             }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6"
           >
             <motion.div
               initial={{
@@ -212,43 +208,17 @@ export default function Timeline({ onNext }: Props) {
                 opacity: 0,
               }}
               onClick={(e) => e.stopPropagation()}
-              style={{
-                width: "90%",
-                maxWidth: 500,
-                padding: 30,
-                borderRadius: 30,
-                background:
-                  "linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,.04))",
-                border: "1px solid rgba(255,255,255,.1)",
-                backdropFilter: "blur(30px)",
-                textAlign: "center",
-              }}
+              className="w-full max-w-xl rounded-[32px] border border-white/10 bg-white/10 p-8 text-center backdrop-blur-2xl"
             >
-              <Sparkles
-                size={36}
-                color="white"
-                style={{
-                  marginBottom: 20,
-                }}
-              />
+              <div className="mb-5 text-6xl">{messages[active].icon}</div>
 
-              <h3
-                style={{
-                  color: "white",
-                  marginBottom: 15,
-                }}
-              >
-                {memories[active].title}
-              </h3>
+              <h2 className="mb-5 text-3xl font-bold text-white">
+                {messages[active].title}
+              </h2>
 
-              <p
-                style={{
-                  color: "rgba(255,255,255,.8)",
-                  lineHeight: 1.8,
-                }}
-              >
-                {memories[active].text}
-              </p>
+              <p className="leading-8 text-white/85">{messages[active].text}</p>
+
+              <Heart size={24} className="mx-auto mt-6 text-pink-400" />
             </motion.div>
           </motion.div>
         )}
