@@ -13,11 +13,13 @@
     "@fontsource/great-vibes": "^5.2.8",
     "canvas-confetti": "^1.9.4",
     "framer-motion": "^12.41.0",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^1.21.0",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-confetti": "^6.4.0",
     "react-dom": "19.2.4",
+    "react-fast-marquee": "^1.6.5",
     "react-type-animation": "^3.2.0",
     "use-sound": "^5.0.0"
   },
