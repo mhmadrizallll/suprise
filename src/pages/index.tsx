@@ -116,8 +116,8 @@ export default function Home() {
           )}
 
           {step === 1 && (
-            <Scene key="journey">
-              <LittleJourney onNext={next} />
+            <Scene key="letter">
+              <SecretLetter onNext={next} />
             </Scene>
           )}
 
@@ -134,8 +134,8 @@ export default function Home() {
           )}
 
           {step === 4 && (
-            <Scene key="letter">
-              <SecretLetter onNext={next} />
+            <Scene key="journey">
+              <LittleJourney onNext={next} />
             </Scene>
           )}
 
