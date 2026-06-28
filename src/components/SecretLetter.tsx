@@ -41,16 +41,21 @@ const letterLines = [
 ];
 
 export default function SecretLetter({ onNext }: { onNext: () => void }) {
+  const [opening, setOpening] = useState(false);
   const [opened, setOpened] = useState(false);
+
   const [visibleLines, setVisibleLines] = useState(0);
   const [finished, setFinished] = useState(false);
 
   const openLetter = () => {
-    if (opened) return;
+    if (opening || opened) return;
 
-    setOpened(true);
-
+    setOpening(true);
     new Audio("/sounds/paper-open.mp3").play().catch(() => {});
+
+    setTimeout(() => {
+      setOpened(true);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -59,7 +64,6 @@ export default function SecretLetter({ onNext }: { onNext: () => void }) {
     if (visibleLines < letterLines.length) {
       const timer = setTimeout(() => {
         setVisibleLines((prev) => prev + 1);
-
         new Audio("/sounds/type.mp3").play().catch(() => {});
       }, 900);
 
@@ -68,7 +72,6 @@ export default function SecretLetter({ onNext }: { onNext: () => void }) {
 
     const finishTimer = setTimeout(() => {
       setFinished(true);
-
       new Audio("/sounds/magic.mp3").play().catch(() => {});
     }, 800);
 
@@ -80,11 +83,12 @@ export default function SecretLetter({ onNext }: { onNext: () => void }) {
       style={{
         minHeight: "100vh",
         position: "relative",
-        overflow: "hidden",
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        padding: 20,
+        padding: "40px 20px", // Ditambah padding atas-bawah agar saat surat memanjang tidak mepet layar
+        backgroundColor: "#111827",
       }}
     >
       {/* BACKGROUND */}
@@ -93,7 +97,8 @@ export default function SecretLetter({ onNext }: { onNext: () => void }) {
           position: "absolute",
           inset: 0,
           background:
-            "radial-gradient(circle at center, rgba(236,72,153,.15), transparent 70%)",
+            "radial-gradient(circle at center, rgba(236,72,153,.2), transparent 70%)",
+          zIndex: 1,
         }}
       />
 
@@ -114,129 +119,228 @@ export default function SecretLetter({ onNext }: { onNext: () => void }) {
             position: "absolute",
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
-            color: "rgba(255,255,255,.3)",
+            color: "rgba(255,255,255,.4)",
             fontSize: 8 + Math.random() * 12,
+            zIndex: 1,
           }}
         >
           ✦
         </motion.div>
       ))}
 
-      {!opened && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          style={{
-            textAlign: "center",
-            maxWidth: 650,
-            position: "relative",
-            zIndex: 2,
-          }}
-        >
-          <motion.img
-            src="/assets/glow-heart.png"
-            animate={{
-              scale: [1, 1.08, 1],
-              rotate: [-2, 2, -2],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-            }}
-            onClick={openLetter}
-            style={{
-              width: 220,
-              cursor: "pointer",
-              marginBottom: 30,
-            }}
-          />
-
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            style={{
-              color: "white",
-              fontSize: 42,
-              fontWeight: 500,
-              marginBottom: 20,
-            }}
-          >
-            Secret Letter 💌
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            style={{
-              color: "rgba(255,255,255,.75)",
-              fontSize: 18,
-              lineHeight: 1.8,
-            }}
-          >
-            Ada satu hal yang ingin kusampaikan.
-            <br />
-            Yang mungkin lebih mudah kutulis
-            <br />
-            daripada kuucapkan.
-          </motion.p>
-
+      <AnimatePresence mode="wait">
+        {!opened ? (
           <motion.div
-            animate={{
-              opacity: [0.3, 1, 0.3],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
+            key="envelope-view"
+            exit={{
+              opacity: 0,
+              scale: 0.8,
+              y: -50,
+              transition: { duration: 0.5, ease: "backIn" },
             }}
             style={{
-              marginTop: 30,
-              color: "#f9a8d4",
-              fontSize: 14,
-              letterSpacing: 2,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              zIndex: 2,
             }}
           >
-            klik hati untuk membuka ✨
+            {/* CONTAINER AMPLOB */}
+            <motion.div
+              animate={{
+                scale: opening ? 0.95 : [1, 1.03, 1],
+                y: opening ? -15 : 0,
+                rotate: opening ? 0 : [-1.5, 1.5, -1.5],
+              }}
+              transition={{
+                duration: opening ? 0.8 : 4,
+                repeat: opening ? 0 : Infinity,
+                ease: "easeInOut",
+              }}
+              onClick={openLetter}
+              style={{
+                width: 230,
+                height: 150,
+                margin: "0 auto 30px",
+                cursor: "pointer",
+                position: "relative",
+                perspective: "1000px",
+              }}
+            >
+              {/* Tutup Amplop */}
+              <motion.div
+                initial={{ rotateX: 0 }}
+                animate={{
+                  rotateX: opening ? 180 : 0,
+                }}
+                transition={{
+                  duration: 0.8,
+                  ease: "easeInOut",
+                }}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: 0,
+                  height: 0,
+                  borderLeft: "115px solid transparent",
+                  borderRight: "115px solid transparent",
+                  borderTop: "75px solid #f3e5c5",
+                  transformOrigin: "top center",
+                  zIndex: opening ? 1 : 4,
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                }}
+              />
+
+              {/* Sisi Belakang Tutup Amplop */}
+              {opening && (
+                <motion.div
+                  initial={{ rotateX: -180, opacity: 0 }}
+                  animate={{ rotateX: 0, opacity: 1 }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
+                  style={{
+                    position: "absolute",
+                    top: -75,
+                    left: 0,
+                    width: 0,
+                    height: 0,
+                    borderLeft: "115px solid transparent",
+                    borderRight: "115px solid transparent",
+                    borderBottom: "75px solid #e2d4b3",
+                    transformOrigin: "bottom center",
+                    zIndex: 1,
+                  }}
+                />
+              )}
+
+              {/* Body Utama Amplop */}
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  background: "#fdf6e3",
+                  borderRadius: 12,
+                  boxShadow: "0 15px 40px rgba(0,0,0,.35)",
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 2,
+                }}
+              >
+                <motion.div
+                  animate={
+                    opening
+                      ? { scale: 0.8, opacity: 0 }
+                      : { scale: [1, 1.1, 1] }
+                  }
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1.5,
+                    ease: "easeInOut",
+                  }}
+                  style={{ fontSize: 46 }}
+                >
+                  ❤️
+                </motion.div>
+              </div>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              style={{
+                color: "white",
+                fontSize: 36,
+                fontWeight: 500,
+                marginBottom: 15,
+                textAlign: "center",
+              }}
+            >
+              Secret Letter 💌
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              style={{
+                color: "rgba(255,255,255,.75)",
+                fontSize: 16,
+                lineHeight: 1.6,
+                textAlign: "center",
+              }}
+            >
+              Ada satu hal yang ingin kusampaikan.
+              <br />
+              Yang mungkin lebih mudah kutulis
+              <br />
+              daripada kuucapkan.
+            </motion.p>
+
+            <motion.div
+              animate={{
+                opacity: [0.3, 1, 0.3],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+              }}
+              style={{
+                marginTop: 25,
+                color: "#f9a8d4",
+                fontSize: 13,
+                letterSpacing: 2,
+                textAlign: "center",
+              }}
+            >
+              klik hati untuk membuka ✨
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-
-      <AnimatePresence>
-        {opened && (
+        ) : (
           <motion.div
+            key="letter-view"
             initial={{
               opacity: 0,
+              scale: 0.8,
               y: 50,
-              scale: 0.95,
             }}
             animate={{
               opacity: 1,
-              y: 0,
               scale: 1,
+              y: 0,
+              transition: { type: "spring", damping: 25, stiffness: 100 },
             }}
             style={{
               width: "100%",
-              maxWidth: 720,
+              maxWidth: 600,
               position: "relative",
-              zIndex: 10,
+              zIndex: 2,
             }}
           >
-            <motion.div
+            {/* SURAT UTAMA */}
+            <div
               style={{
                 background: "linear-gradient(180deg,#fffdf8,#fdf3e6)",
-                borderRadius: 30,
-                padding: 45,
+                borderRadius: 24,
+                padding: "40px",
                 boxShadow: "0 30px 100px rgba(0,0,0,.45)",
                 color: "#222",
                 fontFamily: "Georgia, serif",
+                height: "auto", // Mengikuti isi konten teks
+                overflow: "visible", // Menghilangkan fungsi scroll internal
               }}
             >
               <h2
                 style={{
                   textAlign: "center",
                   marginBottom: 25,
-                  fontSize: 32,
+                  fontSize: 26,
+                  color: "#b91c1c",
                 }}
               >
                 Untuk Kamu ❤️
@@ -245,19 +349,13 @@ export default function SecretLetter({ onNext }: { onNext: () => void }) {
               {letterLines.slice(0, visibleLines).map((line, index) => (
                 <motion.p
                   key={index}
-                  initial={{
-                    opacity: 0,
-                    y: 8,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
                   style={{
-                    lineHeight: 1.55,
+                    lineHeight: 1.5,
                     marginBottom: 4,
                     whiteSpace: "pre-line",
-                    fontSize: 20,
+                    fontSize: 17, // Diperkecil sedikit agar muat banyak tanpa merusak struktur visual
                   }}
                 >
                   {line}
@@ -266,13 +364,8 @@ export default function SecretLetter({ onNext }: { onNext: () => void }) {
 
               {!finished && (
                 <motion.div
-                  animate={{
-                    opacity: [0.2, 1, 0.2],
-                  }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1,
-                  }}
+                  animate={{ opacity: [0.2, 1, 0.2] }}
+                  transition={{ repeat: Infinity, duration: 1 }}
                   style={{
                     marginTop: 15,
                     color: "#888",
@@ -282,49 +375,33 @@ export default function SecretLetter({ onNext }: { onNext: () => void }) {
                   menulis...
                 </motion.div>
               )}
-            </motion.div>
+            </div>
 
             {finished && (
               <motion.div
-                initial={{
-                  opacity: 0,
-                  y: 20,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
                 style={{
                   textAlign: "center",
+                  marginTop: 25,
+                  paddingBottom: 20,
                 }}
               >
                 <motion.p
-                  animate={{
-                    opacity: [0.5, 1, 0.5],
-                  }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 2,
-                  }}
-                  style={{
-                    marginTop: 25,
-                    color: "rgba(255,255,255,.7)",
-                  }}
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                  style={{ color: "rgba(255,255,255,.7)", fontSize: 15 }}
                 >
                   Masih ada satu hal lagi...
                 </motion.p>
 
                 <motion.button
-                  whileHover={{
-                    scale: 1.05,
-                  }}
-                  whileTap={{
-                    scale: 0.95,
-                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={onNext}
                   style={{
-                    marginTop: 20,
-                    padding: "16px 36px",
+                    marginTop: 12,
+                    padding: "14px 32px",
                     borderRadius: 999,
                     border: "none",
                     background: "linear-gradient(135deg,#ec4899,#f472b6)",
@@ -332,7 +409,7 @@ export default function SecretLetter({ onNext }: { onNext: () => void }) {
                     fontWeight: 600,
                     fontSize: 16,
                     cursor: "pointer",
-                    boxShadow: "0 0 40px rgba(236,72,153,.5)",
+                    boxShadow: "0 0 30px rgba(236,72,153,.4)",
                   }}
                 >
                   🎂 Make A Wish
