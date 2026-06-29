@@ -11,6 +11,7 @@ import MemoryRoom from "@/components/MemoryRoom";
 import SecretLetter from "@/components/SecretLetter";
 import BirthdayWish from "@/components/BirthdayWish";
 import SurpriseBox from "@/components/SurpriseBox";
+import LuckyWheel from "@/components/LuckyWheel";
 import FinalMessage from "@/components/FinalMessage";
 
 import { playMusic } from "@/utils/musicEngine";
@@ -117,37 +118,43 @@ export default function Home() {
 
           {step === 1 && (
             <Scene key="letter">
+              {/* <LittleJourney onNext={next} /> */}
+
               <SecretLetter onNext={next} />
             </Scene>
           )}
 
           {step === 2 && (
-            <Scene key="things-like">
-              <ThingsILike onNext={next} />
+            <Scene key="birthday">
+              <BirthdayWish onNext={next} />
             </Scene>
           )}
 
           {step === 3 && (
-            <Scene key="memory-room">
-              <MemoryRoom onNext={next} />
+            // <Scene key="surprise">
+            //   <SurpriseBox onNext={next} />
+            // </Scene>
+            <Scene key="lucky-wheel">
+              <LuckyWheel onNext={next} />
             </Scene>
           )}
 
           {step === 4 && (
             <Scene key="journey">
               <LittleJourney onNext={next} />
+              {/* <SecretLetter onNext={next} /> */}
             </Scene>
           )}
 
           {step === 5 && (
-            <Scene key="birthday">
-              <BirthdayWish onNext={next} />
+            <Scene key="things-like">
+              <ThingsILike onNext={next} />
             </Scene>
           )}
 
           {step === 6 && (
-            <Scene key="surprise">
-              <SurpriseBox onNext={next} />
+            <Scene key="memory-room">
+              <MemoryRoom onNext={next} />
             </Scene>
           )}
 
