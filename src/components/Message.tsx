@@ -22,6 +22,7 @@ Karena seseorang sepertimu layak mendapatkan hari yang menyenangkan.
 Semoga semua hal baik datang menghampirimu.
 Dan semoga senyummu hari ini lebih banyak dari biasanya.
 
+
 ❤️
 `;
 

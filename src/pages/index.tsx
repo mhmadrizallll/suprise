@@ -13,6 +13,7 @@ import BirthdayWish from "@/components/BirthdayWish";
 import SurpriseBox from "@/components/SurpriseBox";
 import LuckyWheel from "@/components/LuckyWheel";
 import FinalMessage from "@/components/FinalMessage";
+import BirthdayWrapped from "@/components/BirthdayWrapped";
 
 import { playMusic } from "@/utils/musicEngine";
 
@@ -111,16 +112,20 @@ export default function Home() {
       >
         <AnimatePresence mode="wait">
           {step === 0 && (
-            <Scene key="intro">
-              <Intro onNext={next} />
+            // <Scene key="intro">
+            //   <Intro onNext={next} />
+            // </Scene>
+            // <Scene key="birthday-wrapped">
+            //   <BirthdayWrapped onNext={next} />
+            // </Scene>
+            <Scene key="final">
+              <FinalMessage onReplay={() => setStep(0)} />
             </Scene>
           )}
 
           {step === 1 && (
-            <Scene key="letter">
-              {/* <LittleJourney onNext={next} /> */}
-
-              <SecretLetter onNext={next} />
+            <Scene key="lucky-wheel">
+              <LuckyWheel onNext={next} />
             </Scene>
           )}
 
@@ -134,8 +139,10 @@ export default function Home() {
             // <Scene key="surprise">
             //   <SurpriseBox onNext={next} />
             // </Scene>
-            <Scene key="lucky-wheel">
-              <LuckyWheel onNext={next} />
+            <Scene key="letter">
+              {/* <LittleJourney onNext={next} /> */}
+
+              <SecretLetter onNext={next} />
             </Scene>
           )}
 
