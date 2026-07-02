@@ -157,7 +157,7 @@ export default function Home() {
             //   <SurpriseBox onNext={next} />
             // </Scene>
             <Scene key="final">
-              <FinalMessage onReplay={() => setStep(0)} />
+              <FinalMessage onFinish={() => setStep(0)} />
             </Scene>
           )}
 
