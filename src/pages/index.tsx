@@ -113,8 +113,8 @@ export default function Home() {
       >
         <AnimatePresence mode="wait">
           {step === 0 && (
-            <Scene key="final">
-              <FinalMessage onReplay={() => setStep(0)} />
+            <Scene key="intro">
+              <Intro onNext={next} />
             </Scene>
 
             // <Scene key="birthday-wrapped">
@@ -156,8 +156,8 @@ export default function Home() {
             // <Scene key="surprise">
             //   <SurpriseBox onNext={next} />
             // </Scene>
-            <Scene key="intro">
-              <Intro onNext={next} />
+            <Scene key="final">
+              <FinalMessage onReplay={() => setStep(0)} />
             </Scene>
           )}
 
