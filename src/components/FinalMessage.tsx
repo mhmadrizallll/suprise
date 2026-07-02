@@ -11,11 +11,11 @@ type Song = {
 
 const songs: Song[] = [
   {
-    title: "Until I Found You",
-    artist: "Stephen Sanchez",
-    duration: 181,
+    title: "Cintanya Aku",
+    artist: "Tiara Andini & Arsy Widianto",
+    duration: 215,
     cover: "/assets/song1.jpg",
-    src: "/music/until-i-found-you.mp3",
+    src: "/music/cintanya.mp3",
   },
   {
     title: "Blue",
@@ -25,11 +25,11 @@ const songs: Song[] = [
     src: "/music/blue.mp3",
   },
   {
-    title: "Night Changes",
-    artist: "One Direction",
+    title: "Langit Favorit feat. Ghazi Alhabsyi",
+    artist: "Luthfi Aulia",
     duration: 226,
     cover: "/assets/song3.jpg",
-    src: "/music/night-changes.mp3",
+    src: "/music/langit.mp3",
   },
 ];
 
@@ -229,7 +229,7 @@ export default function FinalMessage({ onFinish }: { onFinish: () => void }) {
                   marginBottom: 24,
                 }}
               >
-                Before We Say Goodbye...
+                One Last Thing...
               </motion.h1>
 
               <p
@@ -239,11 +239,9 @@ export default function FinalMessage({ onFinish }: { onFinish: () => void }) {
                   lineHeight: 2,
                 }}
               >
-                Aku masih punya
-                <br />
-                satu hal terakhir
-                <br />
-                yang ingin kuberikan.
+                Kalau kamu sudah sampai di sini, <br /> berarti kamu sudah
+                melihat semua yang ingin kubersiapkan walaupun tidak terlalu
+                menarik
               </p>
             </motion.div>
           )}
@@ -279,7 +277,7 @@ export default function FinalMessage({ onFinish }: { onFinish: () => void }) {
                   fontWeight: 700,
                 }}
               >
-                🎵 Choose Your Ending Song
+                🎵 Satu Lagu Terakhir
               </motion.h2>
 
               <motion.p
@@ -293,11 +291,10 @@ export default function FinalMessage({ onFinish }: { onFinish: () => void }) {
                   marginBottom: 45,
                 }}
               >
-                Setiap cerita punya soundtrack.
+                Setiap kenangan rasanya selalu punya lagu.
                 <br />
-                Pilih lagu yang menurutmu paling cocok
-                <br />
-                untuk mengakhiri perjalanan kecil ini.
+                Kalau boleh, pilih satu lagu yang ingin menemani beberapa menit
+                terakhir di sini.
               </motion.p>
 
               <div
@@ -499,7 +496,7 @@ export default function FinalMessage({ onFinish }: { onFinish: () => void }) {
                   marginBottom: 35,
                 }}
               >
-                🎵 Now Playing
+                🎧 Semoga Kamu Menyukainya
               </motion.h2>
 
               <motion.div
@@ -687,18 +684,15 @@ export default function FinalMessage({ onFinish }: { onFinish: () => void }) {
                   }}
                 >
                   {[
-                    "Thank you...",
-                    "",
-                    "for spending",
-                    "a little time",
-                    "with this website.",
-                    "",
-                    "I hope...",
-                    "",
-                    "today becomes",
-                    "one of your happiest memories.",
-                    "",
-                    "Happy Birthday ❤️",
+                    "Terima kasih...sudah meluangkan",
+                    "sedikit waktumu untuk membuka semua ini.",
+                    "Aku tahu ini mungkin hanya sebuah website sederhana.",
+
+                    "Tapi... setiap bagiannya dibuat dengan sungguh-sungguh.",
+
+                    "Semoga hari ini membawa banyak tawa, banyak bahagia, dan banyak cerita baik.",
+
+                    "Selamat ulang tahun, SEKAR ADELIA NURIAWATI. 🎉🎉🎉",
                   ].map((line, index) => (
                     <motion.p
                       key={index}

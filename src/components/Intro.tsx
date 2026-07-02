@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const lines = [
-  "Ada banyak orang yang mengucapkan selamat ulang tahun hari ini.",
-  "Dan aku mungkin hanya salah satunya.",
-  "Tapi...",
-  "aku ingin membuat ucapan yang sedikit berbeda.",
-  "Karena menurutku...",
-  "kamu pantas mendapatkan sesuatu yang dibuat khusus.",
+  "Hai, Sekar. 🌼",
+  "",
+  "Mungkin ada banyak cara orang lain mengucapkan selamat ulang tahun.",
+  "Kalopun aku bisa jadi salah satunya, aku hanya bisa memberikan sesuatu seperti ini.",
+  "",
+  "Bukan hadiah yang mahal.",
+  "Bukan juga sesuatu yang sempurna.",
+  "",
+  "Hanya sebuah cerita kecil...",
+  "Yang bisa aku buat",
 ];
 
 export default function Intro({ onNext }: { onNext: () => void }) {
@@ -230,7 +234,7 @@ export default function Intro({ onNext }: { onNext: () => void }) {
           }}
         />
 
-        <h1
+        {/* <h1
           className="intro-title"
           style={{
             color: "white",
@@ -238,7 +242,7 @@ export default function Intro({ onNext }: { onNext: () => void }) {
           }}
         >
           Untuk Kamu
-        </h1>
+        </h1> */}
 
         <div
           style={{
@@ -309,7 +313,7 @@ export default function Intro({ onNext }: { onNext: () => void }) {
                 boxShadow: "0 0 30px rgba(236,72,153,.45)",
               }}
             >
-              Ada Sesuatu Untukmu ❤️
+              Lanjut ❤️
             </motion.button>
           )}
         </AnimatePresence>

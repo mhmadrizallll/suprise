@@ -3,26 +3,30 @@ import { AnimatePresence, motion } from "framer-motion";
 
 const reasons = [
   {
-    title: "Cara Kamu Bercerita",
-    text: "Aku suka caramu bercerita. Kadang hal yang sederhana terasa jauh lebih menarik saat datang darimu.",
+    icon: "🌼",
+    title: "Edelweis",
+    text: "Katanya bunga edelweis melambangkan keabadian. Sejak tahu kamu menyukainya, aku mencari tahu tentang bunga tersebut. Dan seolah aku ingin tahu makna dari keabadian yang kamu maksud.",
     x: "18%",
     y: "25%",
   },
   {
-    title: "Tawamu",
-    text: "Karena ada beberapa tawa yang tanpa sadar membuat orang lain ikut tersenyum.",
+    icon: "☕",
+    title: "Secangkir Kopi",
+    text: "Semoga selalu ada secangkir kopi yang menemanimu, baik saat hari terasa melelahkan maupun ketika semuanya berjalan baik. Karena di setiap aroma kopi yang datang rasanya menenangkan.",
     x: "72%",
     y: "20%",
   },
   {
-    title: "Perhatian Kecil",
-    text: "Aku suka bagaimana kamu memperhatikan hal-hal kecil yang sering tidak disadari orang lain.",
+    icon: "📖",
+    title: "Cerita Baru",
+    text: "Mungkin aku hanya menebak bahwa kamu menyukai novel romance, aku yakin bahwa hidupmu juga dipenuhi cerita-cerita indah. Tak selalu sempurna, tapi selalu memiliki alasan untuk terus dilanjutkan hingga halaman terakhir.",
     x: "28%",
     y: "65%",
   },
   {
-    title: "Dirimu",
-    text: "Dan mungkin... aku suka dirimu lebih dari yang seharusnya aku akui.",
+    icon: "🍦",
+    title: "Es Krim",
+    text: "Ada alasan kenapa manusia menikmati dinginnya es krim, entah saat merayakan sesuatu, melepas penat, atau membuat hari lebih manis. Kalau aku, cukup dengan caraku mengingatmu, hariku sudah otomatis jadi jauh lebih manis.",
     x: "75%",
     y: "70%",
   },
@@ -120,7 +124,7 @@ export default function ThingsILike({ onNext }: { onNext: () => void }) {
             marginBottom: 12,
           }}
         >
-          Things I Like About You ✨
+          Little Things That Remind Me of You
         </h1>
 
         <p
@@ -128,7 +132,7 @@ export default function ThingsILike({ onNext }: { onNext: () => void }) {
             color: "rgba(255,255,255,.65)",
           }}
         >
-          Sentuh semua bintang yang bersinar ❤️
+          Sentuh setiap bintang, ada cerita kecil di dalamnya ✨
         </p>
 
         <p
@@ -260,13 +264,8 @@ export default function ThingsILike({ onNext }: { onNext: () => void }) {
                 textAlign: "center",
               }}
             >
-              <div
-                style={{
-                  fontSize: 50,
-                  marginBottom: 20,
-                }}
-              >
-                ⭐
+              <div style={{ fontSize: 50, marginBottom: 20 }}>
+                {reasons[active].icon}
               </div>
 
               <h3
@@ -340,9 +339,9 @@ export default function ThingsILike({ onNext }: { onNext: () => void }) {
                 lineHeight: 1.6,
               }}
             >
-              Dan itu...
+              Hal-hal sederhana...
               <br />
-              hanya sebagian kecil alasannya ❤️
+              kadang bisa membuat seseorang terlihat begitu istimewa.
             </h2>
 
             <motion.button

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useAnimation } from "framer-motion";
 
-type Prize = {
+type Slice = {
   emoji: string;
   title: string;
   message: string;
@@ -9,51 +9,47 @@ type Prize = {
   color2: string;
 };
 
-const prizes: Prize[] = [
+const slices: Slice[] = [
   {
-    emoji: "🍜",
-    title: "Makan Bareng",
-    message:
-      "Kalau kamu berkenan, aku ingin ngajak kamu makan suatu hari nanti. Tempatnya bebas, yang penting ngobrolnya sama kamu.",
-    color1: "#FF8FB1",
-    color2: "#EC4899",
+    emoji: "🙂",
+    title: "Jujur aja",
+    message: "Aku gak tau kamu bakal sampai sejauh ini atau enggak.",
+    color1: "#A78BFA",
+    color2: "#7C3AED",
   },
   {
-    emoji: "🎬",
-    title: "Nonton",
-    message: "Filmnya bebas. Yang penting orang di sebelahku semoga kamu.",
+    emoji: "🌙",
+    title: "Tapi makasih",
+    message: "Udah luangin waktu buat lihat semua yang aku buat ini.",
+    color1: "#60A5FA",
+    color2: "#2563EB",
+  },
+  {
+    emoji: "🫧",
+    title: "Aku gak minta apa-apa",
+    message: "Gak ada yang harus kamu balas, serius.",
+    color1: "#34D399",
+    color2: "#059669",
+  },
+  {
+    emoji: "🌿",
+    title: "Kalau suatu hari",
+    message: "Kalau kamu lagi pengen ngobrol / jalan / ngopi, aku ada.",
     color1: "#FBBF24",
     color2: "#F59E0B",
   },
   {
-    emoji: "🧋",
-    title: "Ngopi",
-    message:
-      "Segelas minuman dan obrolan panjang sepertinya akan menyenangkan.",
-    color1: "#7DD3FC",
-    color2: "#38BDF8",
-  },
-  {
-    emoji: "🍦",
-    title: "Es Krim",
-    message: "Sesederhana beli es krim lalu muter kota. Kedengarannya seru.",
-    color1: "#6EE7B7",
-    color2: "#10B981",
-  },
-  {
-    emoji: "📸",
-    title: "Foto Bareng",
-    message:
-      "Supaya nanti ada satu kenangan yang bisa kita lihat sambil senyum sendiri.",
-    color1: "#93C5FD",
-    color2: "#3B82F6",
-  },
-  {
-    emoji: "❤️",
-    title: "Semua Pilihan",
-    message:
-      "Kalau suatu hari kamu mau... aku ingin mencoba semuanya, satu per satu, bersama kamu.",
+    emoji: "🫶",
+    title: "Kalau enggak juga",
+    message: "Gak apa-apa. Aku tetap senang kamu pernah di sini.",
     color1: "#FB7185",
+    color2: "#E11D48",
+  },
+  {
+    emoji: "✨",
+    title: "Udahan",
+    message: "Kayaknya cukup sampai sini. sisanya biar waktu aja.",
+    color1: "#F472B6",
     color2: "#EC4899",
   },
 ];
@@ -74,8 +70,9 @@ function describeSlice(startAngle: number, endAngle: number) {
   return `M ${CENTER} ${CENTER} L ${start.x} ${start.y} A ${RADIUS} ${RADIUS} 0 ${largeArc} 0 ${end.x} ${end.y} Z`;
 }
 
-export default function LuckyWheel({ onNext }: { onNext: () => void }) {
-  const slice = 360 / prizes.length;
+export default function StoryWheel({ onNext }: { onNext: () => void }) {
+  const sliceAngle = 360 / slices.length;
+
   const [rotation, setRotation] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [spinning, setSpinning] = useState(false);
@@ -83,40 +80,35 @@ export default function LuckyWheel({ onNext }: { onNext: () => void }) {
   const pointerControls = useAnimation();
   const spinAudio = useRef<HTMLAudioElement | null>(null);
   const winAudio = useRef<HTMLAudioElement | null>(null);
-  const tickAudio = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     spinAudio.current = new Audio("/sounds/spin.mp3");
     winAudio.current = new Audio("/sounds/magic.mp3");
-    tickAudio.current = new Audio("/sounds/tick.mp3"); // Opsional: suara jarum mendenting jika ada
 
-    [spinAudio, winAudio, tickAudio].forEach((audio) => {
-      if (audio.current) audio.current.volume = 0.5;
-    });
+    if (spinAudio.current) spinAudio.current.volume = 0.4;
+    if (winAudio.current) winAudio.current.volume = 0.4;
   }, []);
 
   const stars = useMemo(
     () =>
-      Array.from({ length: 50 }, () => ({
+      Array.from({ length: 40 }, () => ({
         left: Math.random() * 100,
         top: Math.random() * 100,
-        size: Math.random() * 3 + 2,
-        duration: Math.random() * 3 + 2,
+        size: Math.random() * 2.5 + 1.5,
+        duration: Math.random() * 4 + 2,
       })),
     [],
   );
 
-  // Animasi jarum bergetar (Ticking Effect) saat roda berputar
+  // Efek getar jarum yang disesuaikan saat berputar
   useEffect(() => {
     if (!spinning) return;
-
     const interval = setInterval(() => {
       pointerControls.start({
-        rotate: [-15, 0],
-        transition: { duration: 0.15, ease: "easeOut" },
+        rotate: [-15, 5, 0],
+        transition: { duration: 0.12, ease: "easeInOut" },
       });
-      tickAudio.current?.play().catch(() => {});
-    }, 200);
+    }, 180);
 
     return () => clearInterval(interval);
   }, [spinning, pointerControls]);
@@ -128,12 +120,11 @@ export default function LuckyWheel({ onNext }: { onNext: () => void }) {
     setSpinning(true);
     spinAudio.current?.play().catch(() => {});
 
-    const winner = Math.floor(Math.random() * prizes.length);
-    // Tambah putaran dasar minimum 5 kali + kalkulasi presisi ke tengah slice target
-    const extraSpins = 360 * 6;
-    const targetAngle = 360 - (winner * slice + slice / 2);
+    const winner = Math.floor(Math.random() * slices.length);
+    const extraTurns = 360 * 5;
+    const targetAngle = 360 - (winner * sliceAngle + sliceAngle / 2);
     const finalRotation =
-      rotation + extraSpins + (targetAngle - (rotation % 360));
+      rotation + extraTurns + (targetAngle - (rotation % 360));
 
     setRotation(finalRotation);
 
@@ -141,406 +132,324 @@ export default function LuckyWheel({ onNext }: { onNext: () => void }) {
       setSelected(winner);
       setSpinning(false);
       winAudio.current?.play().catch(() => {});
-    }, 6000);
+    }, 5500);
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        width: "100%",
-        position: "relative",
-        background:
-          "radial-gradient(circle at center, #2e1065 0%, #0f052d 70%, #02000a 100%)",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "2rem",
-        fontFamily: "system-ui, sans-serif",
-        overflow: "hidden",
-      }}
-    >
-      {/* Aurora Ambient Glow */}
+    <div style={styles.container}>
+      {/* Aurora Ambient Background */}
       <motion.div
-        animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          position: "absolute",
-          width: "min(90vw, 800px)",
-          height: "min(90vw, 800px)",
-          borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(236,72,153,0.3) 0%, transparent 70%)",
-          filter: "blur(80px)",
-          pointerEvents: "none",
-        }}
+        animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.3, 0.15] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        style={styles.ambientGlow}
       />
 
-      {/* Sparkling Stars */}
-      {stars.map((star, i) => (
+      {/* Latar Belakang Bintang */}
+      {stars.map((s, i) => (
         <motion.div
           key={i}
-          animate={{ opacity: [0.2, 1, 0.2], scale: [1, 1.2, 1] }}
+          animate={{ opacity: [0.1, 0.8, 0.1], scale: [1, 1.2, 1] }}
           transition={{
-            duration: star.duration,
+            duration: s.duration,
             repeat: Infinity,
             ease: "easeInOut",
           }}
           style={{
-            position: "absolute",
-            left: `${star.left}%`,
-            top: `${star.top}%`,
-            width: star.size,
-            height: star.size,
-            borderRadius: "50%",
-            background: "#fff",
-            boxShadow: "0 0 8px #fff",
-            pointerEvents: "none",
+            ...styles.star,
+            left: `${s.left}%`,
+            top: `${s.top}%`,
+            width: s.size,
+            height: s.size,
           }}
         />
       ))}
 
-      {/* Header Section */}
-      <div
-        style={{
-          zIndex: 10,
-          textAlign: "center",
-          marginBottom: "2.5rem",
-          maxWidth: "600px",
-        }}
-      >
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          style={{
-            color: "#fff",
-            fontSize: "clamp(2rem, 5vw, 3rem)",
-            fontWeight: 800,
-            letterSpacing: "-0.025em",
-            margin: "0 0 0.5rem 0",
-          }}
-        >
-          ✨ Roda Semesta ✨
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          style={{
-            color: "rgba(255,255,255,0.7)",
-            fontSize: "clamp(0.95rem, 2vw, 1.1rem)",
-            lineHeight: 1.6,
-            margin: 0,
-          }}
-        >
-          Katanya setiap momen spesial selalu membawa keajaiban kecil. <br />
-          Tekan tombol di tengah roda dan lihat apa yang semesta rencanakan
-          untuk kita. ❤️
-        </motion.p>
+      {/* Header */}
+      <div style={styles.header}>
+        <h1 style={styles.title}>✨ Terakhir Kali Putar Ini</h1>
+        <p style={styles.subtitle}>Bukan game, cuma cara lain buat bercerita</p>
       </div>
 
-      {/* Wheel Wrapper */}
-      <div
-        style={{
-          position: "relative",
-          width: "min(100%, 500px)",
-          aspectRatio: "1/1",
-          zIndex: 10,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {/* Jarum Penunjuk / Pointer Atas */}
+      {/* Spinner Wheel Wrapper */}
+      <div style={styles.wheelWrapper}>
+        {/* Pointer Penunjuk */}
         <motion.div
           animate={pointerControls}
-          initial={{ rotate: 0 }}
-          style={{
-            position: "absolute",
-            top: "-15px",
-            left: "50%",
-            x: "-50%",
-            zIndex: 40,
-            fontSize: "2.5rem",
-            transformOrigin: "top center",
-            filter: "drop-shadow(0 4px 10px rgba(0,0,0,0.5))",
-          }}
+          style={styles.pointer}
+          initial={{ y: 0 }}
+          whileHover={{ y: -4 }}
         >
-          👇
+          ▼
         </motion.div>
 
-        {/* Lingkaran Luar Roda dengan Efek Neon Dot */}
-        <div
-          style={{
-            position: "absolute",
-            inset: "-10px",
-            borderRadius: "50%",
-            border: "4px solid rgba(255, 255, 255, 0.15)",
-            boxShadow:
-              "0 0 30px rgba(236,72,153,0.25), inset 0 0 20px rgba(236,72,153,0.2)",
-            pointerEvents: "none",
-          }}
-        />
-
-        {/* Main SVG Wheel */}
+        {/* Lingkaran Roda Utama */}
         <motion.svg
           viewBox={`0 0 ${SIZE} ${SIZE}`}
           animate={{ rotate: rotation }}
-          transition={{ duration: 6, ease: [0.2, 0.85, 0.25, 1] }}
-          style={{
-            width: "100%",
-            height: "100%",
-            overflow: "visible",
-            filter: "drop-shadow(0 15px 30px rgba(0,0,0,0.5))",
-          }}
+          transition={{ duration: 5.5, ease: [0.25, 1, 0.2, 1] }}
+          style={styles.svgWheel}
         >
           <defs>
-            {prizes.map((item, index) => (
+            {slices.map((s, i) => (
               <linearGradient
-                id={`grad-${index}`}
-                key={index}
+                key={i}
+                id={`g${i}`}
                 x1="0%"
                 y1="0%"
                 x2="100%"
                 y2="100%"
               >
-                <stop offset="0%" stopColor={item.color1} />
-                <stop offset="100%" stopColor={item.color2} />
+                <stop offset="0%" stopColor={s.color1} />
+                <stop offset="100%" stopColor={s.color2} />
               </linearGradient>
             ))}
+            {/* Efek bayangan dalam roda */}
+            <radialGradient id="wheelShadow">
+              <stop offset="80%" stopColor="rgba(0,0,0,0)" />
+              <stop offset="100%" stopColor="rgba(0,0,0,0.35)" />
+            </radialGradient>
           </defs>
 
-          {/* Slices Rendering */}
-          {prizes.map((item, index) => {
-            const start = index * slice;
-            const end = start + slice;
+          {/* Render Potongan Roda */}
+          {slices.map((s, i) => {
+            const start = i * sliceAngle;
+            const end = start + sliceAngle;
             return (
-              <path
-                key={index}
-                d={describeSlice(start, end)}
-                fill={`url(#grad-${index})`}
-                stroke="#0f052d"
-                strokeWidth="3"
-                style={{ cursor: "pointer" }}
-              />
+              <g key={i}>
+                <path
+                  d={describeSlice(start, end)}
+                  fill={`url(#g${i})`}
+                  stroke="#110c29"
+                  strokeWidth="2"
+                />
+              </g>
             );
           })}
 
-          {/* Labels & Emojis */}
-          {prizes.map((item, index) => {
-            const angle = index * slice + slice / 2;
-            const radius = 150; // Jarak teks dari titik pusat
-            const pos = polarToCartesian(CENTER, CENTER, radius, angle);
+          {/* Lapisan Bayangan Lingkaran */}
+          <circle
+            cx={CENTER}
+            cy={CENTER}
+            r={RADIUS}
+            fill="url(#wheelShadow)"
+            pointerEvents="none"
+          />
+
+          {/* Render Konten Teks dan Emoji (Sudah Disesuaikan Kemiringannya) */}
+          {slices.map((s, i) => {
+            const angle = i * sliceAngle + sliceAngle / 2;
+            const pos = polarToCartesian(CENTER, CENTER, 155, angle);
+            // Memutar teks agar sejajar searah jari-jari roda
+            const textRotation = angle;
 
             return (
               <g
-                key={index}
-                transform={`translate(${pos.x},${pos.y}) rotate(${angle})`}
+                key={i}
+                transform={`translate(${pos.x},${pos.y}) rotate(${textRotation})`}
               >
-                <text
-                  textAnchor="middle"
-                  y="-10"
-                  fontSize="26"
-                  style={{ userSelect: "none" }}
-                >
-                  {item.emoji}
+                <text textAnchor="middle" fontSize={26} dy="-10">
+                  {s.emoji}
                 </text>
                 <text
                   textAnchor="middle"
-                  y="18"
-                  fill="#ffffff"
-                  fontSize="12.5"
-                  fontWeight="800"
-                  style={{
-                    letterSpacing: "0.05em",
-                    textShadow: "0 2px 4px rgba(0,0,0,0.6)",
-                    userSelect: "none",
-                  }}
+                  fontSize={11}
+                  fontWeight={700}
+                  fill="#fff"
+                  letterSpacing="0.5"
                 >
-                  {item.title.toUpperCase()}
+                  {s.title.toUpperCase()}
                 </text>
               </g>
             );
           })}
         </motion.svg>
 
-        {/* Tombol Putar Terintegrasi di Pusat Lingkaran */}
+        {/* Tombol Putar Tengah */}
         <motion.button
           onClick={spin}
           disabled={spinning}
-          whileHover={{ scale: spinning ? 1 : 1.08 }}
-          whileTap={{ scale: spinning ? 1 : 0.93 }}
+          whileHover={{ scale: spinning ? 1 : 1.05 }}
+          whileTap={{ scale: spinning ? 1 : 0.92 }}
           style={{
-            position: "absolute",
-            width: "90px",
-            height: "90px",
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #ffffff 0%, #f472b6 100%)",
-            border: "6px solid #0f052d",
-            boxShadow:
-              "0 8px 20px rgba(0,0,0,0.4), inset 0 2px 5px rgba(255,255,255,0.8)",
-            color: "#0f052d",
-            fontWeight: 800,
-            fontSize: "0.9rem",
-            letterSpacing: "0.02em",
+            ...styles.spinButton,
             cursor: spinning ? "not-allowed" : "pointer",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 35,
+            boxShadow: spinning ? "none" : "0 8px 24px rgba(0,0,0,0.3)",
           }}
         >
-          {spinning ? "⚡" : "PUTAR"}
+          {spinning ? "..." : "PUTAR"}
         </motion.button>
       </div>
 
-      {/* Dialog Result Pop-up Modals */}
+      {/* Modal Dialog Hasil Akhir */}
       <AnimatePresence>
         {selected !== null && (
-          <>
-            {/* Backdrop Blur Gelap */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={styles.modalOverlay}
+          >
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              style={{
-                position: "fixed",
-                inset: 0,
-                background: "rgba(3, 1, 12, 0.75)",
-                backdropFilter: "blur(8px)",
-                zIndex: 90,
-              }}
-            />
-
-            {/* Custom Interactive Particle Confetti */}
-            <div
-              style={{
-                position: "fixed",
-                inset: 0,
-                pointerEvents: "none",
-                zIndex: 100,
-              }}
+              initial={{ scale: 0.85, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.85, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              style={styles.modalContent}
             >
-              {Array.from({ length: 60 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  initial={{
-                    y: -50,
-                    x: Math.random() * window.innerWidth,
-                    opacity: 1,
-                    scale: Math.random() * 0.6 + 0.4,
-                  }}
-                  animate={{
-                    y: window.innerHeight + 50,
-                    x: `calc(${Math.random() * 100}vw)`,
-                    rotate: Math.random() * 360,
-                  }}
-                  transition={{
-                    duration: Math.random() * 2 + 2.5,
-                    ease: "linear",
-                  }}
-                  style={{
-                    position: "absolute",
-                    width: "12px",
-                    height: "12px",
-                    borderRadius: Math.random() > 0.5 ? "50%" : "2px",
-                    background: [
-                      (item) => item.color1,
-                      "#fff",
-                      "#f472b6",
-                      "#fbbf24",
-                    ][Math.floor(Math.random() * 4)],
-                  }}
-                />
-              ))}
-            </div>
+              <div style={styles.modalEmoji}>{slices[selected].emoji}</div>
+              <h2 style={styles.modalTitle}>{slices[selected].title}</h2>
+              <p style={styles.modalMessage}>{slices[selected].message}</p>
 
-            {/* Modal Box Result Card */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.85, y: 30 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              transition={{ type: "spring", damping: 25, stiffness: 180 }}
-              style={{
-                position: "fixed",
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "min(90%, 480px)",
-                zIndex: 150,
-              }}
-            >
-              <div
-                style={{
-                  background: "rgba(255, 255, 255, 0.08)",
-                  backdropFilter: "blur(24px)",
-                  border: "1px solid rgba(255, 255, 255, 0.15)",
-                  borderRadius: "28px",
-                  padding: "2.5rem 2rem",
-                  textAlign: "center",
-                  boxShadow: `0 20px 50px rgba(0,0,0,0.5), 0 0 40px ${prizes[selected].color1}20`,
-                }}
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={onNext}
+                style={styles.modalButton}
               >
-                <motion.div
-                  animate={{ y: [-6, 6, -6] }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  style={{ fontSize: "4.5rem", marginBottom: "1rem" }}
-                >
-                  {prizes[selected].emoji}
-                </motion.div>
-
-                <h2
-                  style={{
-                    color: "#fff",
-                    fontSize: "2rem",
-                    fontWeight: 800,
-                    margin: "0 0 1rem 0",
-                  }}
-                >
-                  {prizes[selected].title}
-                </h2>
-
-                <p
-                  style={{
-                    color: "rgba(255,255,255,0.85)",
-                    fontSize: "1.05rem",
-                    lineHeight: 1.7,
-                    margin: "0 0 2rem 0",
-                    fontWeight: 400,
-                  }}
-                >
-                  {prizes[selected].message}
-                </p>
-
-                <motion.button
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.96 }}
-                  onClick={onNext}
-                  style={{
-                    width: "100%",
-                    padding: "14px 28px",
-                    borderRadius: "999px",
-                    border: "none",
-                    background: `linear-gradient(135deg, ${prizes[selected].color1} 0%, ${prizes[selected].color2} 100%)`,
-                    color: "#fff",
-                    fontWeight: 700,
-                    fontSize: "1.05rem",
-                    cursor: "pointer",
-                    boxShadow: `0 10px 25px ${prizes[selected].color2}40`,
-                  }}
-                >
-                  Lanjut Temani Aku ❤️
-                </motion.button>
-              </div>
+                Selesai
+              </motion.button>
             </motion.div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
   );
 }
+
+// Koleksi Styling Terpisah agar rapi
+const styles: Record<string, React.CSSProperties> = {
+  container: {
+    minHeight: "100vh",
+    width: "100%",
+    position: "relative",
+    background:
+      "radial-gradient(circle at center, #16113a 0%, #090514 70%, #030106 100%)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    fontFamily: "'Inter', system-ui, sans-serif",
+    overflow: "hidden",
+    color: "#fff",
+  },
+  ambientGlow: {
+    position: "absolute",
+    width: 650,
+    height: 650,
+    borderRadius: "50%",
+    background:
+      "radial-gradient(circle, rgba(124, 58, 237, 0.2) 0%, transparent 75%)",
+    filter: "blur(90px)",
+    pointerEvents: "none",
+  },
+  star: {
+    position: "absolute",
+    borderRadius: "50%",
+    background: "#fff",
+    pointerEvents: "none",
+  },
+  header: {
+    textAlign: "center",
+    zIndex: 10,
+    marginBottom: 35,
+  },
+  title: {
+    fontSize: "2.2rem",
+    fontWeight: 800,
+    letterSpacing: "-0.5px",
+    marginBottom: 8,
+    background: "linear-gradient(to right, #fff, #c7d2fe)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+  },
+  subtitle: {
+    opacity: 0.5,
+    fontSize: "0.95rem",
+  },
+  wheelWrapper: {
+    position: "relative",
+    width: SIZE,
+    height: SIZE,
+    filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.5))",
+  },
+  pointer: {
+    position: "absolute",
+    top: -18,
+    left: "50%",
+    transform: "translateX(-50%)",
+    fontSize: 32,
+    zIndex: 50,
+    color: "#ff4757",
+    filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
+  },
+  svgWheel: {
+    width: "100%",
+    height: "100%",
+  },
+  spinButton: {
+    position: "absolute",
+    width: 85,
+    height: 85,
+    borderRadius: "50%",
+    border: "4px solid #110c29",
+    background: "#fff",
+    color: "#110c29",
+    fontWeight: 800,
+    fontSize: "0.95rem",
+    letterSpacing: "0.5px",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    zIndex: 40,
+    transition: "background 0.2s",
+  },
+  modalOverlay: {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(5, 3, 12, 0.65)",
+    backdropFilter: "blur(12px)",
+    WebkitBackdropFilter: "blur(12px)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 100,
+  },
+  modalContent: {
+    background: "rgba(255, 255, 255, 0.06)",
+    border: "1px solid rgba(255, 255, 255, 0.1)",
+    padding: "40px 30px",
+    borderRadius: 24,
+    maxWidth: 420,
+    width: "90%",
+    textAlign: "center",
+    boxShadow:
+      "0 30px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
+  },
+  modalEmoji: {
+    fontSize: 64,
+    marginBottom: 16,
+    filter: "drop-shadow(0 10px 15px rgba(0,0,0,0.2))",
+  },
+  modalTitle: {
+    fontSize: "1.75rem",
+    fontWeight: 700,
+    marginBottom: 12,
+  },
+  modalMessage: {
+    opacity: 0.75,
+    lineHeight: "1.6",
+    fontSize: "1.05rem",
+    marginBottom: 28,
+  },
+  modalButton: {
+    padding: "12px 36px",
+    borderRadius: 999,
+    border: "none",
+    background: "#fff",
+    color: "#000",
+    fontWeight: 700,
+    fontSize: "1rem",
+    cursor: "pointer",
+    boxShadow: "0 10px 20px rgba(255,255,255,0.1)",
+  },
+};

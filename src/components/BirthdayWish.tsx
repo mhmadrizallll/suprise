@@ -207,12 +207,13 @@ export default function BirthdayWish({ onNext }: { onNext: () => void }) {
           }}
           style={{
             color: "white",
-            fontSize: 48,
-            marginBottom: 20,
+            fontSize: 30,
+            marginBottom: 10,
+            marginTop: 20,
             fontWeight: 600,
           }}
         >
-          🎂 Birthday Wish
+          Satu Harapan Untuk Hari Ini ✨
         </motion.h1>
         <motion.p
           initial={{
@@ -231,18 +232,16 @@ export default function BirthdayWish({ onNext }: { onNext: () => void }) {
             marginBottom: 50,
           }}
         >
-          Sebelum kita membuka hadiah terakhir...
           <br />
-          aku ingin meminta satu hal.
+          Pejamkan mata kamu sebentar.
           <br />
+          Pikirkan satu harapan yang benar-benar kamu inginkan di usia yang baru
+          ini.
           <br />
-          Tutup matamu sebentar.
+          Kalau sudah...
           <br />
-          Tarik napas perlahan.
+          klik lilinnya.
           <br />
-          Lalu pikirkan satu harapan
-          <br />
-          yang benar-benar ingin kamu wujudkan.
         </motion.p>
         {/* Cake Section */}
         <motion.div
@@ -706,19 +705,15 @@ export default function BirthdayWish({ onNext }: { onNext: () => void }) {
                 }}
               >
                 {[
-                  "Aku memang tidak tahu...",
-                  "harapan apa yang sedang kamu simpan malam ini.",
-                  "",
-                  "Tapi aku benar-benar berharap...",
-                  "semesta sedang sibuk menyiapkan",
-                  "sesuatu yang indah untukmu.",
-                  "",
-                  "Semoga langkahmu selalu dipenuhi kebahagiaan.",
-                  "Semoga setiap doa menemukan jalannya.",
-                  "Dan semoga senyummu",
-                  "selalu punya alasan untuk hadir.",
-                  "",
-                  "Selamat ulang tahun. ❤️",
+                  "Walaupun tidak tahu harapan apa yang sedang kamu simpan.",
+                  // "harapan apa yang sedang kamu simpan malam ini.",
+                  "Baik itu tentang keluarga ataupun pekerjaan",
+                  "Mungkin juga tentang mimpi-mimpi yang masih ingin kamu kejar.",
+                  "Apa pun itu...",
+                  "aku berharap semuanya datang pada waktu yang tepat,",
+                  "Semoga di tahun ini selalu ada cerita baru yang membuatmu betah membaca sampai halaman terakhir.",
+                  "Semoga semesta selalu menyenangkan untuk semua hari-harimu. 🌼",
+                  "happy birthday, Sekar🎉",
                 ].map((line, index) => (
                   <motion.p
                     key={index}
@@ -844,7 +839,7 @@ export default function BirthdayWish({ onNext }: { onNext: () => void }) {
                   boxShadow: "0 15px 40px rgba(236,72,153,.45)",
                 }}
               >
-                🎁 Buka Kejutan Terakhir
+                Lanjutkan Perjalanan →
               </motion.button>
             </motion.div>
           )}
@@ -865,7 +860,7 @@ export default function BirthdayWish({ onNext }: { onNext: () => void }) {
             letterSpacing: 3,
           }}
         >
-          made with ❤️ just for you
+          dibuat khusus untuk seseorang yang sedang berulang tahun 🌼
         </motion.p>
       </div>
     </div>

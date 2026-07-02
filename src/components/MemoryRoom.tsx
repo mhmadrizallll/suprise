@@ -4,28 +4,28 @@ import { AnimatePresence, motion } from "framer-motion";
 const reasons = [
   {
     icon: "🌸",
-    title: "Cara Kamu Bercerita",
-    text: "Aku suka cara kamu bercerita. Kadang cerita sederhana pun jadi menarik saat datang dari kamu.",
+    title: "Edelweis",
+    text: "Katanya bunga edelweis melambangkan keabadian. Sejak tahu kamu menyukainya, aku jadi penasaran kenapa seseorang bisa begitu menyukai bunga yang tumbuh di tempat tinggi. Mungkin karena keindahannya bukan untuk dimiliki, tapi untuk dikagumi.",
+  },
+  {
+    icon: "☕",
+    title: "Secangkir Kopi",
+    text: "Entah kopi favoritmu pahit atau manis, semoga selalu ada secangkir kopi yang menemanimu di hari-hari yang melelahkan. Dan semoga setiap teguknya membawa sedikit ketenangan.",
+  },
+  {
+    icon: "🍨",
+    title: "Manis Sederhana",
+    text: "Kamu pernah bilang lebih suka minuman manis atau es krim daripada makanan pedas. Makanya, dunia harus memperlakukanmu dengan cara yang sama, dipenuhi cerita-cerita manis yang menenangkan, bukan hal-hal rumit yang membuatmu kewalahan oleh masalah.",
+  },
+  {
+    icon: "📖",
+    title: "Cerita Romantis",
+    text: "Kamu berhak mendapatkan akhir yang bahagia dari setiap novel romance yang kamu baca dan film yang kamu tonton. Bahkan saat hidupmu sendiri terasa seperti sebuah cerita, aku akan memastikan nyata harimu terasa lebih indah daripada fiksi di halaman terakhir novel.",
   },
   {
     icon: "✨",
-    title: "Energi Positif",
-    text: "Entah kenapa, kehadiranmu sering membuat suasana terasa lebih ringan dan menyenangkan.",
-  },
-  {
-    icon: "🦋",
-    title: "Hal-Hal Kecil",
-    text: "Kamu mungkin tidak sadar, tapi ada banyak hal kecil darimu yang diam-diam membuat orang nyaman.",
-  },
-  {
-    icon: "🌙",
-    title: "Keunikanmu",
-    text: "Di antara banyak orang, kamu punya cara tersendiri yang membuatmu mudah diingat.",
-  },
-  {
-    icon: "💎",
-    title: "Menjadi Dirimu Sendiri",
-    text: "Salah satu hal terbaik tentang kamu adalah kamu tetap menjadi dirimu sendiri.",
+    title: "Tetap Menjadi Kamu",
+    text: "Dari semua hal yang aku tahu tentangmu, mungkin yang paling menarik bukan bunga, kopi, atau cerita romantisnya. Tapi bagaimana semua hal kecil itu membentuk seseorang yang unik, dan tetap menjadi dirinya sendiri.",
   },
 ];
 
@@ -46,17 +46,17 @@ export default function WhyYoureSpecial({ onNext }: { onNext: () => void }) {
     setActive(index);
   };
 
-  useEffect(() => {
-    if (opened.length === reasons.length) {
-      setTimeout(() => {
-        setShowEnding(true);
+  // useEffect(() => {
+  //   if (opened.length === reasons.length) {
+  //     setTimeout(() => {
+  //       setShowEnding(true);
 
-        const audio = new Audio("/sounds/magic.mp3");
-        audio.volume = 0.6;
-        audio.play().catch(() => {});
-      }, 1000);
-    }
-  }, [opened]);
+  //       const audio = new Audio("/sounds/magic.mp3");
+  //       audio.volume = 0.6;
+  //       audio.play().catch(() => {});
+  //     }, 1000);
+  //   }
+  // }, [opened]);
 
   return (
     <div
@@ -121,7 +121,7 @@ export default function WhyYoureSpecial({ onNext }: { onNext: () => void }) {
             marginBottom: 10,
           }}
         >
-          ❤️ Why You're Special
+          ✨ Hal-Hal yang Membuatmu Istimewa
         </motion.h2>
 
         <p
@@ -131,9 +131,8 @@ export default function WhyYoureSpecial({ onNext }: { onNext: () => void }) {
             marginBottom: 60,
           }}
         >
-          Ada beberapa alasan yang membuatmu berbeda.
-          <br />
-          Klik setiap fragmen hati untuk menemukannya.
+          Setiap fragmen hati menyimpan satu cerita kecil. Sentuh satu per satu,
+          dan temukan cerita di baliknya.
         </p>
 
         {/* CENTER HEART */}
@@ -238,7 +237,21 @@ export default function WhyYoureSpecial({ onNext }: { onNext: () => void }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setActive(null)}
+            onClick={() => {
+              setActive(null);
+
+              // Jika semua fragmen sudah dibuka,
+              // baru tampilkan ending setelah modal ditutup.
+              if (opened.length === reasons.length) {
+                const audio = new Audio("/sounds/magic.mp3");
+                audio.volume = 0.6;
+                audio.play().catch(() => {});
+
+                setTimeout(() => {
+                  setShowEnding(true);
+                }, 300);
+              }
+            }}
             style={{
               position: "fixed",
               inset: 0,

@@ -14,6 +14,7 @@ import SurpriseBox from "@/components/SurpriseBox";
 import LuckyWheel from "@/components/LuckyWheel";
 import FinalMessage from "@/components/FinalMessage";
 import BirthdayWrapped from "@/components/BirthdayWrapped";
+import WhatsAppInvite from "@/components/WhatsAppInvite";
 
 import { playMusic } from "@/utils/musicEngine";
 
@@ -29,13 +30,13 @@ export default function Home() {
   useEffect(() => {
     const musicMap: Record<number, string> = {
       0: "/music/intro.mp3",
-      1: "/music/journey.mp3",
-      2: "/music/like.mp3",
-      3: "/music/memory.mp3",
-      4: "/music/letter.mp3",
-      5: "/music/birthday.mp3",
-      6: "/music/gift.mp3",
-      7: "/music/final.mp3",
+      // 1: "/music/journey.mp3",
+      1: "/music/like.mp3",
+      2: "/music/memory.mp3",
+      3: "/music/letter.mp3",
+      4: "/music/birthday.mp3",
+      5: "/music/gift.mp3",
+      6: "/music/final.mp3",
     };
 
     const music = musicMap[step];
@@ -112,64 +113,62 @@ export default function Home() {
       >
         <AnimatePresence mode="wait">
           {step === 0 && (
-            // <Scene key="intro">
-            //   <Intro onNext={next} />
-            // </Scene>
-            // <Scene key="birthday-wrapped">
-            //   <BirthdayWrapped onNext={next} />
-            // </Scene>
             <Scene key="final">
               <FinalMessage onReplay={() => setStep(0)} />
             </Scene>
+
+            // <Scene key="birthday-wrapped">
+            //   <BirthdayWrapped onNext={next} />
+            // </Scene>
+            // <Scene key="final">
+            //   <FinalMessage onReplay={() => setStep(0)} />
+            // </Scene>
           )}
 
           {step === 1 && (
-            <Scene key="lucky-wheel">
-              <LuckyWheel onNext={next} />
-            </Scene>
-          )}
-
-          {step === 2 && (
             <Scene key="birthday">
               <BirthdayWish onNext={next} />
             </Scene>
           )}
 
-          {step === 3 && (
-            // <Scene key="surprise">
-            //   <SurpriseBox onNext={next} />
+          {step === 2 && (
+            // <Scene key="things-like">
+            //   <ThingsILike onNext={next} />
             // </Scene>
-            <Scene key="letter">
-              {/* <LittleJourney onNext={next} /> */}
-
-              <SecretLetter onNext={next} />
-            </Scene>
-          )}
-
-          {step === 4 && (
-            <Scene key="journey">
-              <LittleJourney onNext={next} />
-              {/* <SecretLetter onNext={next} /> */}
-            </Scene>
-          )}
-
-          {step === 5 && (
-            <Scene key="things-like">
-              <ThingsILike onNext={next} />
-            </Scene>
-          )}
-
-          {step === 6 && (
             <Scene key="memory-room">
               <MemoryRoom onNext={next} />
             </Scene>
           )}
 
-          {step === 7 && (
-            <Scene key="final">
-              <FinalMessage onReplay={() => setStep(0)} />
+          {step === 3 && (
+            <Scene key="letter">
+              <SecretLetter onNext={next} />
             </Scene>
           )}
+
+          {step === 4 && (
+            <Scene key="lucky-wheel">
+              <LuckyWheel onNext={next} />
+            </Scene>
+          )}
+
+          {step === 5 && (
+            // <Scene key="surprise">
+            //   <SurpriseBox onNext={next} />
+            // </Scene>
+            <Scene key="intro">
+              <Intro onNext={next} />
+            </Scene>
+          )}
+
+          {/* {step === 6 && (
+          )} */}
+
+          {/* {step === 7 && (
+            <Scene key="journey">
+              <LittleJourney onNext={next} />              
+            </Scene>
+          )} */}
         </AnimatePresence>
       </div>
     </>
